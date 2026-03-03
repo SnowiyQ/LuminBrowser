@@ -361,14 +361,16 @@ Every `launch()` call sets these automatically. Defaults are **platform-aware** 
 | `--fingerprint` | Random (10000–99999) | Random (10000–99999) | Master seed for canvas, WebGL, audio, fonts, client rects |
 | `--fingerprint-platform` | `windows` | `macos` | `navigator.platform`, User-Agent OS, GPU pool selection |
 | `--fingerprint-hardware-concurrency` | `8` | *(not set — uses real value)* | `navigator.hardwareConcurrency` |
-| `--fingerprint-gpu-vendor` | `NVIDIA Corporation` | *(not set — native Apple GPU)* | WebGL `UNMASKED_VENDOR_WEBGL` |
-| `--fingerprint-gpu-renderer` | `NVIDIA GeForce RTX 3070` | *(not set — native Metal renderer)* | WebGL `UNMASKED_RENDERER_WEBGL` |
+| `--fingerprint-gpu-vendor` | `NVIDIA Corporation` | `Google Inc. (Apple)` | WebGL `UNMASKED_VENDOR_WEBGL` |
+| `--fingerprint-gpu-renderer` | `NVIDIA GeForce RTX 3070` | `ANGLE (Apple, ANGLE Metal Renderer: Apple M3, Unspecified Version)` | WebGL `UNMASKED_RENDERER_WEBGL` |
 | `--fingerprint-device-memory` | `8` | *(not set)* | `navigator.deviceMemory` |
 | `--fingerprint-screen-width` | `1920` | *(not set)* | Screen width reporting |
 | `--fingerprint-screen-height` | `1080` | *(not set)* | Screen height reporting |
 | `--window-size` | `1920,1080` | *(not set)* | Browser window dimensions |
 
 > **Important:** `--fingerprint-platform` should always be set. Without it, platform-specific patches (GPU, UA, screen, taskbar) won't activate. The wrapper handles this automatically.
+
+> **⚠️ Using the binary directly (without the wrapper)?** The binary does not auto-spoof without flags. You must pass `--fingerprint`, `--fingerprint-platform`, and GPU flags explicitly. Without these, real device values pass through unmodified. See the table above for the full list of flags the wrapper sets automatically.
 
 ### Additional Flags
 
@@ -542,6 +544,13 @@ const browser = await launch({ args: ['--disable-http2'] });
 ```
 
 Only use this flag for sites that require it — most sites work fine with HTTP/2.
+
+**Something not working? Make sure you're on the latest wrapper**
+Older versions may use outdated stealth args or download an older binary:
+```bash
+pip install -U cloakbrowser    # Python
+npm install cloakbrowser@latest # JavaScript
+```
 
 **Binary download fails / timeout**
 Set a custom download URL or use a local binary:

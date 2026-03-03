@@ -20,8 +20,8 @@ CHROMIUM_VERSION = "145.0.7632.109"
 
 PLATFORM_CHROMIUM_VERSIONS: dict[str, str] = {
     "linux-x64": "145.0.7632.109",
-    "darwin-arm64": "142.0.7444.175",
-    "darwin-x64": "142.0.7444.175",
+    "darwin-arm64": "145.0.7632.109",
+    "darwin-x64": "145.0.7632.109",
 }
 
 # ---------------------------------------------------------------------------
@@ -47,6 +47,8 @@ def get_default_stealth_args() -> list[str]:
         # Tell the fingerprint patches we're on macOS so GPU/UA match natively
         return base + [
             "--fingerprint-platform=macos",
+            "--fingerprint-gpu-vendor=Google Inc. (Apple)",
+            "--fingerprint-gpu-renderer=ANGLE (Apple, ANGLE Metal Renderer: Apple M3, Unspecified Version)",
         ]
 
     # Linux: spoof as Windows

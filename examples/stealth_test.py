@@ -143,7 +143,7 @@ def test_recaptcha(page):
     """recaptcha-demo.appspot.com — Google's official reCAPTCHA v3 score."""
     page.goto(
         "https://recaptcha-demo.appspot.com/recaptcha-v3-request-scores.php",
-        wait_until="networkidle",
+        wait_until="domcontentloaded",
         timeout=30000,
     )
     # Page auto-submits via grecaptcha.execute() — wait for backend response
