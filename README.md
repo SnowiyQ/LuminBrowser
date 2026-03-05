@@ -578,19 +578,39 @@ browser.close()
 
 This runs a real headed browser rendered on a virtual display — no physical monitor needed. Combined with a residential proxy, this passes even the most aggressive detection services. Datacenter IPs are often flagged by IP reputation regardless of browser fingerprint — a residential proxy makes the difference.
 
-**Reddit or similar sites show CAPTCHA / "Prove your humanity"**
+**Sites challenge fresh sessions but work after first visit**
 
-Some sites (notably Reddit homepage) use HTTP/2 fingerprinting that detects Playwright's connection layer. Pass `--disable-http2` to fall back to HTTP/1.1:
+Some sites challenge first-time visitors with no cookies over HTTP/2. This affects all Chromium browsers, not just CloakBrowser. Use a persistent profile to warm up cookies once, then reuse across sessions:
 
 ```python
-browser = launch(args=["--disable-http2"])
+from cloakbrowser import launch_persistent_context
+
+# First run: warm up with --disable-http2
+ctx = launch_persistent_context("./profile", args=["--disable-http2"])
+page = ctx.new_page()
+page.goto("https://example.com")  # warms up cookies
+ctx.close()
+
+# Future runs — no --disable-http2 needed
+ctx = launch_persistent_context("./profile")
+page = ctx.new_page()
+page.goto("https://example.com")  # passes with saved cookies
 ```
 
 ```javascript
-const browser = await launch({ args: ['--disable-http2'] });
+import { launchPersistentContext } from 'cloakbrowser';
+
+// First run: warm up with --disable-http2
+let ctx = await launchPersistentContext({ userDataDir: './profile', args: ['--disable-http2'] });
+let page = await ctx.newPage();
+await page.goto('https://example.com');
+await ctx.close();
+
+// Future runs — no --disable-http2 needed
+ctx = await launchPersistentContext({ userDataDir: './profile' });
 ```
 
-Only use this flag for sites that require it — most sites work fine with HTTP/2.
+For stateless/ephemeral use cases, `launch(args=["--disable-http2"])` forces HTTP/1.1 which bypasses the check. Only use this flag for sites that require it — most work fine with HTTP/2.
 
 **Something not working? Make sure you're on the latest version**
 Older versions may use outdated stealth args or download an older binary:
