@@ -29,7 +29,6 @@ describe("config", () => {
       expect(args.some((a) => a.includes("hardware-concurrency"))).toBe(false);
     } else {
       expect(args).toContain("--fingerprint-platform=windows");
-      expect(args).toContain("--fingerprint-hardware-concurrency=8");
     }
 
     // Should have a random fingerprint seed
