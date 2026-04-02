@@ -3,14 +3,13 @@
 browser-use handles AI agent logic, CloakBrowser handles bot detection.
 Your agent can now browse sites behind Cloudflare, reCAPTCHA, DataDome.
 
-Requires: pip install browser-use cloakbrowser langchain-openai
+Requires: pip install browser-use cloakbrowser
 Set OPENAI_API_KEY (or swap for another LLM provider).
 """
 
 import asyncio
 
-from browser_use import Agent, Browser, BrowserConfig
-from langchain_openai import ChatOpenAI
+from browser_use import Agent, BrowserSession, ChatOpenAI
 
 from cloakbrowser import launch_async
 
@@ -23,14 +22,13 @@ async def main():
     )
 
     # Step 2: Connect browser-use to the stealth browser via CDP
-    config = BrowserConfig(cdp_url="http://127.0.0.1:9242")
-    browser = Browser(config=config)
+    session = BrowserSession(cdp_url="http://127.0.0.1:9242")
 
     # Step 3: Run your AI agent — it browses through CloakBrowser
     agent = Agent(
         task="Go to https://www.google.com and search for 'browser automation'",
         llm=ChatOpenAI(model="gpt-4o-mini"),
-        browser=browser,
+        browser_session=session,
     )
 
     result = await agent.run()

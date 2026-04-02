@@ -21,7 +21,7 @@ async def main():
     )
 
     # Step 2: Connect Crawl4AI to the stealth browser via CDP
-    browser_config = BrowserConfig(cdp_url="http://127.0.0.1:9243")
+    browser_config = BrowserConfig(browser_mode="cdp", cdp_url="http://127.0.0.1:9243")
     run_config = CrawlerRunConfig()
 
     async with AsyncWebCrawler(config=browser_config) as crawler:
